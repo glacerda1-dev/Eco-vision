@@ -1,0 +1,26 @@
+# Rust build artifacts
+/target
+/.cargo-task-cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local SQLite databases and temp data
+data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

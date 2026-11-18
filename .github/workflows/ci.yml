@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: "Testes e Análise Estática"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout do repositório"
+        uses: actions/checkout@v4
+
+      - name: "Instalar Rust (stable)"
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: "clippy, rustfmt"
+
+      - name: Cache de dependências Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Verificar formatação (cargo fmt)
+        run: cargo fmt --all -- --check
+
+      - name: Análise estática (cargo clippy)
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Executar testes
+        run: cargo test --all
+        env:
+          DATABASE_URL: "sqlite::memory:"
+          RUST_LOG: "error"
